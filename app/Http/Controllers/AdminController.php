@@ -8,9 +8,13 @@ use App\Models\User;
 use App\Models\teacher;
 use App\Models\enroll;
 use App\Models\admission;
-use Illuminate\Support\Facades\Hash;
+use App\Models\notification;
+
+// use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Crypt;
 use App\Mail\AdmissionConfirmed;
 use App\Mail\AdmissionDeletion;
+use App\Models\info;
 use Illuminate\Support\Facades\Mail;
 
 
@@ -513,6 +517,10 @@ public function getallcourse(){
     $course = course::count();
     echo $course;
 }
+public function getallnotfication(){
+    $notification=notification::count();
+    echo $notification;
+}
 
 
 
@@ -521,26 +529,129 @@ public function getallcourse(){
 // updadmin
 
 public function updadmin(Request $req){
-    $req->validate([
-        'name' => 'required',
-        'password' => 'required'
-    ]);
     $user = User::where('email', $req->email)->first();
     if ($user) {
-        $user->password = Hash::make($req->password); // Assign hashed password
-        $user->name = $req->name; // Assign new name
-        $user->save(); // Save changes to the database
+        // Update the password if provided
+        $user->password = Crypt::encryptString($req->password);
+        $user->name = $req['name'];
+        // Update the name if provided
+
+    
+        // Save changes to the database
+        $user->save();
+        
         return response([
-            'name' => $req->name,
-            'password' => $req->password, // You may not want to return password in response
-            "message" => "Admin Updated Successfully"
+            'name' => $user->name,
+            'message' => 'Admin Updated Successfully'
+            // Note: It's generally a bad practice to return the password in the response
         ]);
-    } else {
+    }
+     else {
         return response([
             "message" => "User not found"
         ]);
     }
 }
+
+
+
+
+
+
+
+// add notification
+
+public function notification(Request $req){
+    $req->validate([
+        'message'=>'required',
+        'date'=>'required'
+    ]);
+    $notification=notification::create([
+        'message'=>$req['message'],
+        'date'=>$req['date'],
+    ]);
+    $notification->save();
+    return response([
+       
+        'message' => 'Notification Added Successfuly'
+        
+    ]);
+}
+
+
+
+// get all notiifcation
+
+public function allnotification(){
+    $data=notification::all();
+ 
+    return response()->json([
+        'data'=>$data,
+        'message' => 'Notification Added Successfuly'
+        
+    ]);
+
+}
+
+
+// delete notification
+
+public function deletenotification(Request $req,$id){
+    $find=notification::find($id);
+
+        $find->delete();
+   
+}
+
+
+// get edit notification data
+public function updatenotification($id){
+    $find=notification::find($id);
+    return response()->json([
+        'data'=>$find
+    ]);
+}
+
+
+
+// edit notification
+
+public function editenotification(Request $req,$id){
+    $find=notification::where('id',$id)->first();
+    if($find){
+        $find->message=$req['message'];
+        $find->date=$req['date'];
+    }
+    $find->save();
+    return response([
+        'message'=>'Notification Updated Successfully'
+    ]);
+
+}
+
+    // get contact us data
+    public function getcontact(){
+        $data=info::all();
+        return response()->json([
+            'message'=>'get contact data',
+            'data'=>$data,
+        ]);
+    }
+    
+
+    public function deletecontact($id){
+        $data=info::find($id);
+        if($data){
+            $data->delete();
+            return response()->json([
+                "message"=>"data deleted"
+            ]);
+        };
+    }
+
+
+
+
 
 
 }

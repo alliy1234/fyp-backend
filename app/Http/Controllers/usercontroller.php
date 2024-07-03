@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\enroll;
 use App\Models\admission;
 use App\Models\course;
+use App\Models\info;
 
 use App\Models\teacher;
 
@@ -89,8 +90,8 @@ class usercontroller extends Controller
                             "id" => $user->id,
                             "name" => $user->name,
                             "email" => $user->email,
-                            "image"=>$user->image
-                            // "password" => $user->password
+                            "image"=>$user->image,
+                            "password" => $user->password
                         ]
                     ]);
                 } else if ($decryptedPassword === $req->password && $user->role == 1) {
@@ -104,8 +105,8 @@ class usercontroller extends Controller
                             "id" => $user->id,
                             "name" => $user->name,
                             "email" => $user->email,
-                            "image"=>$user->image
-                            // "password" => $user->password
+                            "image"=>$user->image,
+                            "password" => $user->password
                         ]
                     ]);
                 } else {
@@ -137,7 +138,7 @@ class usercontroller extends Controller
             $user->save(); // Save changes to the database
             return response([
                 'name' => $req->name,
-                'password' => $req->password, // You may not want to return password in response
+                // 'password' => $req->password, // You may not want to return password in response
                 "message" => "Updated Successfully"
             ]);
         } else {
@@ -211,6 +212,31 @@ echo $user;
         ]);
     }
 
+    }
+
+
+
+
+    // leave info
+
+    public function contact(Request $req){
+        $req->validate([
+            'name'=>'required',
+            'email'=>'required',
+            'subject'=>'required',
+            'message'=>'required',
+        ]);
+        $data=info::create([
+            'name'=>$req['name'],
+            'email'=>$req['email'],
+            'subject'=>$req['subject'],
+            'message'=>$req['message'],
+        ]);
+        if($data){
+            return response([
+                'message'=>"Data added successfully"
+            ]);
+        }
     }
 
     

@@ -49,6 +49,7 @@ Route::get('/getalluser',[AdminController::class,'getalluser']);
 Route::get('/getalladmission',[AdminController::class,'getalladmission']);
 Route::get('/getallteachers',[AdminController::class,'getallteacher']);
 Route::get('/getallcourse',[AdminController::class,'getallcourse']);
+Route::get('/getallnotification',[AdminController::class,'getallnotfication']);
 
 
 
@@ -62,9 +63,20 @@ Route::get('/getadmission',[AdminController::class,'getadmission']);
 Route::delete('/deleteadmission/{id}',[AdminController::class,'deleteadmission']);
 Route::post('/findadmission/{id}',[AdminController::class,'findadmission']);
 Route::post('/stausadmission/{id}',[usercontroller::class,'checkit']);
+Route::post('/notification',[AdminController::class,'notification']);
+Route::get('/allnotification',[AdminController::class,'allnotification']);
+Route::delete('/deletenotification/{id}',[AdminController::class,'deletenotification']);
+Route::get('/updatenotification/{id}',[AdminController::class,'updatenotification']);
+Route::post('/editenotification/{id}',[AdminController::class,'editenotification']);
 
 
 
+
+
+// contact us
+Route::post('/contact',[usercontroller::class,'contact']);
+Route::get('/contactdata',[AdminController::class,'getcontact']);
+Route::delete('/delete/{id}',[AdminController::class,'deletecontact']);
 
 
 Route::post('password/email', [PasswordResetController::class, 'sendResetLinkEmail']);
